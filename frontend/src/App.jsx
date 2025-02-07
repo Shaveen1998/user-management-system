@@ -8,8 +8,7 @@ import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function App() {
-  const token =
-    useSelector((state) => state.auth.token) || localStorage.getItem("token");
+  const token = useSelector((state) => state.auth.token);
 
   return (
     <Router>

@@ -108,6 +108,8 @@ const Home = () => {
             <Loader />
           ) : error ? (
             <div className="text-red-500 text-center">{error}</div>
+          ) : users.length === 0 ? (
+            <p className="text-red-500 text-center">No users</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full border border-gray-200">
