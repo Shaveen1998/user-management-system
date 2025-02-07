@@ -27,7 +27,11 @@ module.exports.login = async (req, res) => {
     res
       .cookie("token", token)
       .status(200)
-      .json({ message: "User Logged in Successfully" });
+      .json({
+        token,
+        admin: { id: admin._id, username: admin.username },
+        message: "User logged in successfully",
+      });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

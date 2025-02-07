@@ -7,10 +7,16 @@ import { addUser } from "../store/userSlice";
 const Create = ({ fetchUsers }) => {
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
       const response = await axios.post("http://localhost:3000/api/users/", {
         firstName,
@@ -24,6 +30,9 @@ const Create = ({ fetchUsers }) => {
       }
     } catch (err) {
       console.error("Error creating user:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,8 +59,13 @@ const Create = ({ fetchUsers }) => {
             onClick={handleSubmit}
             className="w-full px-4 py-2 text-lg font-bold text-white bg-black rounded-lg hover:bg-gray-500 hover:text-black mt-4"
           >
-            Create
+            {loading ? "Creating..." : "Create"}
           </button>
+          {error && (
+            <div className="text-red-500 mt-2">
+              {error.message || "An error occurred"}
+            </div>
+          )}
         </div>
       </div>
     </>

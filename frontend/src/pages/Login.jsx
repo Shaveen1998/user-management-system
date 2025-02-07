@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loginAdmin } from "../store/authSlice";
+import Loader from "../components/Loader";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -49,7 +50,7 @@ const Login = () => {
             className="w-full px-4 py-4 text-lg font-bold text-white bg-black rounded-lg hover:bg-gray-500 hover:text-black"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Log in"}
+            {loading ? <Loader /> : "Log in"}
           </button>
         </div>
       </div>

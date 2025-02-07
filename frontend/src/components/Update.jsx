@@ -19,8 +19,13 @@ const UpdateForm = () => {
   const [lastName, setLastname] = useState(
     currentUser ? currentUser.lastName : ""
   );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
     try {
       const response = await axios.put(
         `http://localhost:3000/api/users/${id}`,
@@ -37,6 +42,9 @@ const UpdateForm = () => {
       }
     } catch (err) {
       console.error("Error updating user:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,9 +79,15 @@ const UpdateForm = () => {
           <button
             onClick={handleSubmit}
             className="w-full px-4 py-4 text-lg font-bold text-white bg-black rounded-lg hover:bg-gray-500 hover:text-black"
+            disabled={loading}
           >
-            Update
+            {loading ? "Updating..." : "Update"}
           </button>
+          {error && (
+            <div className="text-red-500 mt-2">
+              {error.message || "An error occurred"}
+            </div>
+          )}
         </div>
       </div>
     </>

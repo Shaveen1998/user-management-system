@@ -7,6 +7,7 @@ import Create from "../components/Create";
 import { deleteUser, setUsers } from "../store/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutAdmin } from "../store/authSlice";
+import Loader from "../components/Loader";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -26,6 +27,7 @@ const Home = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -42,6 +44,7 @@ const Home = () => {
       }
     } catch (err) {
       console.error("Error deleting user:", err);
+      setError("Failed to delete user. Please try again.");
     }
   };
 
@@ -54,8 +57,6 @@ const Home = () => {
     navigate("/login");
   };
 
-  if (loading) return <p>Loading users...</p>;
-  if (error) return <p>Error: {error}</p>;
   return (
     <>
       <div className="flex items-center justify-between px-6 md:px-[200px] py-4">
@@ -87,42 +88,49 @@ const Home = () => {
         </div>
       </div>
       <Create fetchUsers={fetchUsers} />
-      <div className="w-full flex justify-center items-center h-[80vh]">
+      <div className="w-full flex justify-center items-center mt-5">
         <div className="w-[90%] md:w-[50%] border-2 border-black rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-bold text-center mb-4">User List</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border border-gray-200">
-              <thead>
-                <tr className="bg-gray-100 text-left">
-                  <th className="border p-3">First Name</th>
-                  <th className="border p-3">Last Name</th>
-                  <th className="border p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user._id} className="border">
-                    <td className="border p-3">{user.firstName}</td>
-                    <td className="border p-3">{user.lastName}</td>
-                    <td className="border p-3 flex space-x-4">
-                      <button
-                        onClick={() => handleEdit(user._id)}
-                        className="p-2 rounded-md bg-black text-white hover:bg-gray-500"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="p-2 rounded-md bg-red-500 text-white hover:bg-red-700"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
-                    </td>
+
+          {loading ? (
+            <Loader />
+          ) : error ? (
+            <div className="text-red-500 text-center">{error}</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border border-gray-200">
+                <thead>
+                  <tr className="bg-gray-100 text-left">
+                    <th className="border p-3">First Name</th>
+                    <th className="border p-3">Last Name</th>
+                    <th className="border p-3">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user._id} className="border">
+                      <td className="border p-3">{user.firstName}</td>
+                      <td className="border p-3">{user.lastName}</td>
+                      <td className="border p-3 flex space-x-4">
+                        <button
+                          onClick={() => handleEdit(user._id)}
+                          className="p-2 rounded-md bg-black text-white hover:bg-gray-500"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="p-2 rounded-md bg-red-500 text-white hover:bg-red-700"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </>
