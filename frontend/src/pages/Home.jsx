@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Create from "../components/Create";
 import { deleteUser, setUsers } from "../store/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { logoutAdmin } from "../store/authSlice";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
@@ -13,21 +14,21 @@ const Home = () => {
   const users = useSelector((state) => state.users.users);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { admin, token } = useSelector((state) => state.auth);
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/users/");
+      dispatch(setUsers(response.data));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/users/");
-        dispatch(setUsers(response.data));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
-  }, [users, dispatch]);
+  }, []);
 
   const handleDelete = async (id) => {
     try {
@@ -37,6 +38,7 @@ const Home = () => {
 
       if (response.status === 200) {
         dispatch(deleteUser(id));
+        fetchUsers();
       }
     } catch (err) {
       console.error("Error deleting user:", err);
@@ -47,6 +49,11 @@ const Home = () => {
     navigate(`/update/${id}`);
   };
 
+  const handleLogout = () => {
+    dispatch(logoutAdmin());
+    navigate("/login");
+  };
+
   if (loading) return <p>Loading users...</p>;
   if (error) return <p>Error: {error}</p>;
   return (
@@ -55,8 +62,31 @@ const Home = () => {
         <h1 className="text-lg md:text-xl font-extrabold">
           <Link to="/">User Management System</Link>
         </h1>
+
+        <div>
+          {token ? (
+            <>
+              <span className="text-sm font-medium m-5">
+                Welcome, {admin?.username}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-white bg-black rounded hover:bg-gray-700"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
+            >
+              Login
+            </Link>
+          )}
+        </div>
       </div>
-      <Create />
+      <Create fetchUsers={fetchUsers} />
       <div className="w-full flex justify-center items-center h-[80vh]">
         <div className="w-[90%] md:w-[50%] border-2 border-black rounded-lg p-4 shadow-lg">
           <h2 className="text-xl font-bold text-center mb-4">User List</h2>

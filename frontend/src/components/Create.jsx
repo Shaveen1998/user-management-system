@@ -1,14 +1,16 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
 
-const UserForm = () => {
+const Create = ({ fetchUsers }) => {
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const dispatch = useDispatch();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post("http://localhost:3000/api/users/", {
         firstName,
@@ -18,6 +20,7 @@ const UserForm = () => {
       if (response.status === 201) {
         const newUser = response.data;
         dispatch(addUser(newUser));
+        fetchUsers();
       }
     } catch (err) {
       console.error("Error creating user:", err);
@@ -47,7 +50,7 @@ const UserForm = () => {
             onClick={handleSubmit}
             className="w-full px-4 py-2 text-lg font-bold text-white bg-black rounded-lg hover:bg-gray-500 hover:text-black mt-4"
           >
-            Submit
+            Create
           </button>
         </div>
       </div>
@@ -55,4 +58,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default Create;
