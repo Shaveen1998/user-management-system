@@ -1,4 +1,3 @@
-// src/store/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -18,9 +17,20 @@ const userSlice = createSlice({
     setUsers: (state, action) => {
       state.users = action.payload;
     },
+    updateUser: (state, action) => {
+      const { id, firstName, lastName } = action.payload;
+      const userIndex = state.users.findIndex((user) => user.id === id);
+      if (userIndex !== -1) {
+        state.users[userIndex] = {
+          ...state.users[userIndex],
+          firstName,
+          lastName,
+        };
+      }
+    },
   },
 });
 
-export const { addUser, deleteUser, setUsers } = userSlice.actions;
+export const { addUser, deleteUser, setUsers, updateUser } = userSlice.actions;
 
 export default userSlice.reducer;
