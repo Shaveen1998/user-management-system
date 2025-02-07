@@ -10,6 +10,7 @@ const UpdateForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const users = useSelector((state) => state.users.users);
+  const { token } = useSelector((state) => state.auth);
 
   const currentUser = users.find((u) => u._id === id);
 
@@ -32,7 +33,8 @@ const UpdateForm = () => {
         {
           firstName,
           lastName,
-        }
+        },
+        { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.status === 200) {

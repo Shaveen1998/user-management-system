@@ -34,12 +34,14 @@ const Login = () => {
           </h1>
           {error && <p className="text-red-500">{error}</p>}
           <input
+            required
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-2 border-2 border-black outline-0"
             type="text"
             placeholder="Enter your username"
           />
           <input
+            required
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-2 border-2 border-black outline-0"
             type="password"

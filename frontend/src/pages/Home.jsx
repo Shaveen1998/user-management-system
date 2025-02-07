@@ -19,7 +19,11 @@ const Home = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/");
+      const response = await axios.get("http://localhost:3000/api/users/", {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       dispatch(setUsers(response.data));
     } catch (err) {
       setError(err.message);
@@ -35,7 +39,11 @@ const Home = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/users/${id}`
+        `http://localhost:3000/api/users/${id}`,
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       if (response.status === 200) {

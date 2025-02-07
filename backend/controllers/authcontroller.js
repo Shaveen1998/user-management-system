@@ -1,19 +1,20 @@
 const Auth = require("../models/authModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const errorHandler = require("../utils/error");
 
 //login
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res, next) => {
   try {
     const admin = await Auth.findOne({ username: req.body.username });
 
     if (!admin) {
-      return res.status(404).json({ error: "Admin Not found" });
+      return next(errorHandler(403, "Username Not found"));
     }
     const match = await bcrypt.compare(req.body.password, admin.password);
 
     if (!match) {
-      return res.status(401).json({ error: "Wrong credentials" });
+      return next(errorHandler(401, "Wrong credentials!"));
     }
     const token = jwt.sign(
       {
@@ -33,7 +34,7 @@ module.exports.login = async (req, res) => {
         message: "User logged in successfully",
       });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
@@ -45,6 +46,6 @@ module.exports.logout = async (req, res) => {
       .status(200)
       .send("User logged out successfully!");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return next(errorHandler(500, "Error logging out"));
   }
 };

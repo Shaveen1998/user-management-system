@@ -18,10 +18,14 @@ const Create = ({ fetchUsers }) => {
     setError(null);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/users/", {
-        firstName,
-        lastName,
-      });
+      const response = await axios.post(
+        "http://localhost:3000/api/users/",
+        {
+          firstName,
+          lastName,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 201) {
         const newUser = response.data;
