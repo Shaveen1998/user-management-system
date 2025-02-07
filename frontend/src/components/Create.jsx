@@ -3,8 +3,11 @@ import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../store/userSlice";
+import { useSelector } from "react-redux";
 
 const Create = ({ fetchUsers }) => {
+  const { token } = useSelector((state) => state.auth);
+
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [loading, setLoading] = useState(false);
@@ -24,7 +27,7 @@ const Create = ({ fetchUsers }) => {
           firstName,
           lastName,
         },
-        { withCredentials: true }
+        { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
 
       if (response.status === 201) {

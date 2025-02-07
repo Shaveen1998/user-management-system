@@ -10,13 +10,13 @@ const {
 } = require("../controllers/userController");
 
 //CREATE
-router.post("/", createUser);
+router.post("/", verifyToken, createUser);
 
 //GET
-router.get("/", getAllUsers);
+router.get("/", verifyToken, getAllUsers);
 
 //UPDATE
-router.put("/:id", updateUser);
+router.put("/:id", verifyToken, updateUser);
 
 //DELETE
 router.delete("/:id", verifyToken, deleteUser);
