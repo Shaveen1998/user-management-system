@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+
 const dotenv = require("dotenv");
+const userRoutes = require("./routes/userRoute");
 
 dotenv.config();
+app.use(express.json());
 
 const connectDB = async () => {
   try {
@@ -13,6 +16,8 @@ const connectDB = async () => {
     console.log(err);
   }
 };
+
+app.use("/api/users", userRoutes);
 
 app.listen(process.env.PORT, () => {
   connectDB();
