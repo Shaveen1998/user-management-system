@@ -39,7 +39,7 @@ module.exports.login = async (req, res, next) => {
 };
 
 ///logout
-module.exports.logout = async (req, res) => {
+module.exports.logout = async (req, res, next) => {
   try {
     res
       .clearCookie("token", { sameSite: "none", secure: true })

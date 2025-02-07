@@ -10,12 +10,14 @@ import { logoutAdmin } from "../store/authSlice";
 import Loader from "../components/Loader";
 
 const Home = () => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { admin, token } = useSelector((state) => state.auth);
   const users = useSelector((state) => state.users.users);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { admin, token } = useSelector((state) => state.auth);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -60,9 +62,18 @@ const Home = () => {
     navigate(`/update/${id}`);
   };
 
-  const handleLogout = () => {
-    dispatch(logoutAdmin());
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await axios.get("http://localhost:3000/api/auth/logout", {
+        withCredentials: true,
+      });
+
+      dispatch(logoutAdmin());
+      navigate("/login");
+    } catch (err) {
+      console.error("Error logging out:", err);
+      setError("Failed to log out. Please try again.");
+    }
   };
 
   return (
@@ -73,7 +84,7 @@ const Home = () => {
         </h1>
 
         <div>
-          {token ? (
+          {token && (
             <>
               <span className="text-sm font-medium m-5">
                 Welcome, {admin?.username}
@@ -85,13 +96,6 @@ const Home = () => {
                 Logout
               </button>
             </>
-          ) : (
-            <Link
-              to="/login"
-              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700"
-            >
-              Login
-            </Link>
           )}
         </div>
       </div>
@@ -115,8 +119,8 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user) => (
-                    <tr key={user._id} className="border">
+                  {users.map((user, index) => (
+                    <tr key={user._id || index} className="border">
                       <td className="border p-3">{user.firstName}</td>
                       <td className="border p-3">{user.lastName}</td>
                       <td className="border p-3 flex space-x-4">

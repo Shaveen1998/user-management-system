@@ -6,12 +6,13 @@ import { updateUser } from "../store/userSlice";
 import axios from "axios";
 
 const UpdateForm = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { id } = useParams();
   const users = useSelector((state) => state.users.users);
   const { token } = useSelector((state) => state.auth);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { id } = useParams();
   const currentUser = users.find((u) => u._id === id);
 
   const [firstName, setFirstname] = useState(
